@@ -9,11 +9,11 @@ export class CelestialBody {
     this.canvasContext = canvasContext;
     this.arcRadius = arcRadius;
     this.rotatingSpeedMultiplier = rotatingSpeedMultiplier;
-    this.mainObjectImageSource = mainCelestialBodyImageSource;
+    this.mainCelestialBodyImageSource = mainCelestialBodyImageSource;
     this.moons = moons;
   }
 
-  drawOrbit() {
+  drawOrbit = () => {
     this.canvasContext.beginPath();
     const arcX = 0;
     const arcY = 0;
@@ -22,9 +22,9 @@ export class CelestialBody {
     const arcEndAngle = Math.PI * 2;
     this.canvasContext.arc(arcX, arcY, arcRadius, arcStartAngle, arcEndAngle);
     this.canvasContext.stroke();
-  }
+  };
 
-  drawObject() {
+  drawObject = (dx, dy, dWidth, dHeight) => {
     const time = new Date();
     this.canvasContext.rotate(
       ((this.rotatingSpeedMultiplier * Math.PI) / 60) * time.getSeconds() +
@@ -34,11 +34,21 @@ export class CelestialBody {
     const translateX = this.arcRadius;
     const translateY = 0;
     this.canvasContext.translate(translateX, translateY);
-    this.canvasContext.drawImage(this.mainObjectImageSource, -12, -12);
-  }
+    this.canvasContext.drawImage(
+      this.mainCelestialBodyImageSource,
+      dx,
+      dy,
+      dWidth,
+      dHeight
+    );
+  };
 
-  drawMoons() {
-    const drawMoon = ({ moonImageSource, moonRotatingSpeedMultiplier }) => {
+  drawMoons = () => {
+    const drawMoon = ({
+      moonImageSource,
+      moonRotatingSpeedMultiplier,
+      translateY
+    }) => {
       const time = new Date();
 
       this.canvasContext.save();
@@ -47,12 +57,12 @@ export class CelestialBody {
           ((moonRotatingSpeedMultiplier * Math.PI) / 6000) *
             time.getMilliseconds()
       );
-      this.canvasContext.translate(0, 28.5);
+      this.canvasContext.translate(0, translateY);
       this.canvasContext.drawImage(moonImageSource, -3.5, -3.5);
       this.canvasContext.restore();
     };
     this.moons.forEach(moon => {
       drawMoon(moon);
     });
-  }
+  };
 }
