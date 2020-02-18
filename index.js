@@ -1,4 +1,5 @@
 import { CelestialBody } from "./CelestialBody.js";
+import { Planet } from "./Planet.js";
 
 const canvas = document.querySelector("#canvas");
 canvas.width = window.innerWidth;
@@ -26,14 +27,15 @@ ctx.beginPath();
 ctx.arc(...Object.values(playerBall));
 ctx.stroke();
 
-function drawBall(canvasContext, params) {
-  canvasContext.beginPath();
-  canvasContext.arc(...Object.values(params));
-  canvasContext.stroke();
+function drawSpaceShip(canvasContext) {
+  const spaceship = new Image();
+  spaceship.src = "/assets/spaceship.png";
+  canvasContext.drawImage(spaceship, 0, 0, 30, 30);
+  window.requestAnimationFrame(() => drawSpaceShip(ctx));
 }
 
-// const deltaX = 8;
-// const deltaY = 8;
+const deltaX = 0.25;
+const deltaY = 0.25;
 
 // document.addEventListener("keypress", event => {
 //   console.log(event);
@@ -71,6 +73,36 @@ function draw(canvasContext) {
   canvasContext.fillStyle = "rgba(0, 0, 0, 0.4)";
   canvasContext.strokeStyle = "rgba(0, 153, 255, 0.4)";
   canvasContext.save();
+
+  // Spaceship
+  const drawSpaceShip = () => {
+    const spaceship = new Image();
+    spaceship.src = "/assets/spaceship.png";
+    canvasContext.drawImage(spaceship, playerBall.x, playerBall.y, 75, 40);
+  };
+  drawSpaceShip();
+  document.addEventListener("keypress", event => {
+    if (event.key === "d") {
+      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
+      playerBall.x += deltaX;
+      drawSpaceShip();
+    }
+    if (event.key === "a") {
+      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
+      playerBall.x -= deltaX;
+      drawSpaceShip();
+    }
+    if (event.key === "w") {
+      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
+      playerBall.y -= deltaY;
+      drawSpaceShip();
+    }
+    if (event.key === "s") {
+      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
+      playerBall.y += deltaY;
+      drawSpaceShip();
+    }
+  });
 
   // Sun
   const sun = new Image();
@@ -257,6 +289,7 @@ function draw(canvasContext) {
   Neptune.drawMoons();
   canvasContext.restore();
   canvasContext.save();
+  canvasContext.translate(0, 0);
 
   // Universe
   canvasContext.fillStyle = "rgba(0, 0, 0, 0.65)";

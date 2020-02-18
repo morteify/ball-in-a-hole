@@ -26,11 +26,13 @@ export class CelestialBody {
 
   drawObject = (dx, dy, dWidth, dHeight) => {
     const time = new Date();
+
     this.canvasContext.rotate(
-      ((this.rotatingSpeedMultiplier * Math.PI) / 60) * time.getSeconds() +
-        ((this.rotatingSpeedMultiplier * Math.PI) / 60000) *
-          time.getMilliseconds()
+      (((2 * Math.PI) / 60) * time.getSeconds() +
+        ((2 * Math.PI) / 60000) * time.getMilliseconds()) *
+        this.rotatingSpeedMultiplier
     );
+
     const translateX = this.arcRadius;
     const translateY = 0;
     this.canvasContext.translate(translateX, translateY);
@@ -53,16 +55,18 @@ export class CelestialBody {
 
       this.canvasContext.save();
       this.canvasContext.rotate(
-        ((moonRotatingSpeedMultiplier * Math.PI) / 6) * time.getSeconds() +
-          ((moonRotatingSpeedMultiplier * Math.PI) / 6000) *
-            time.getMilliseconds()
+        (((2 * Math.PI) / 6) * time.getSeconds() +
+          ((2 * Math.PI) / 6000) * time.getMilliseconds()) *
+          moonRotatingSpeedMultiplier
       );
       this.canvasContext.translate(0, translateY);
       this.canvasContext.drawImage(moonImageSource, -3.5, -3.5);
       this.canvasContext.restore();
     };
-    this.moons.forEach(moon => {
-      drawMoon(moon);
-    });
+    if (this.moons !== null) {
+      this.moons.forEach(moon => {
+        drawMoon(moon);
+      });
+    }
   };
 }
