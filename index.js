@@ -1,108 +1,47 @@
 import { CelestialBody } from "./CelestialBody.js";
 import { Planet } from "./Planet.js";
+import { Timer } from "./Timer.js";
 
+let seconds = 0;
+window.onload = () => Timer(seconds);
+
+const body = document.querySelector("body");
+body.style = "width:'100vw';height:'100vh';margin:0;padding:0";
 const canvas = document.querySelector("#canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext("2d");
 
-const universe = new Image();
-universe.src = "/assets/universe.jpg";
-
-var moon = new Image();
-function init() {
-  moon.src = "https://mdn.mozillademos.org/files/1443/Canvas_moon.png";
-  window.requestAnimationFrame(() => draw(ctx));
-}
-const playerBall = {
-  x: 100,
-  y: 75,
+const centerCoord = {
+  width: window.innerWidth / 2,
+  height: window.innerHeight / 2
+};
+const player = {
+  x: centerCoord.width - 120,
+  y: centerCoord.height - 90,
   radius: 25,
   startAngle: 0,
   endAngle: 2 * Math.PI,
   anticlockwise: false
 };
 
-ctx.beginPath();
-ctx.arc(...Object.values(playerBall));
-ctx.stroke();
-
-function drawSpaceShip(canvasContext) {
-  const spaceship = new Image();
-  spaceship.src = "/assets/spaceship.png";
-  canvasContext.drawImage(spaceship, 0, 0, 30, 30);
-  window.requestAnimationFrame(() => drawSpaceShip(ctx));
+function init(ctx, player, centerCoord, time) {
+  window.requestAnimationFrame(() => draw(ctx, player, centerCoord, time));
 }
 
-const deltaX = 0.25;
-const deltaY = 0.25;
+function draw(canvasContext, player, centerCoord, time) {
+  const universe = new Image();
+  universe.src = "/assets/universe.jpg";
 
-// document.addEventListener("keypress", event => {
-//   console.log(event);
-//   if (event.key === "d") {
-//     ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-//     playerBall.x += deltaX;
-//     drawBall(ctx, playerBall);
-//   }
-//   if (event.key === "a") {
-//     ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-//     playerBall.x -= deltaX;
-//     drawBall(ctx, playerBall);
-//   }
-//   if (event.key === "w") {
-//     ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-//     playerBall.y -= deltaY;
-//     drawBall(ctx, playerBall);
-//   }
-//   if (event.key === "s") {
-//     ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-//     playerBall.y += deltaY;
-//     drawBall(ctx, playerBall);
-//   }
-// });
+  const moon = new Image();
+  moon.src = "https://mdn.mozillademos.org/files/1443/Canvas_moon.png";
 
-const centerCoord = {
-  width: 780,
-  height: 520
-};
-
-function draw(canvasContext) {
   canvasContext.globalCompositeOperation = "destination-over";
   canvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight); // clear canvas
 
   canvasContext.fillStyle = "rgba(0, 0, 0, 0.4)";
   canvasContext.strokeStyle = "rgba(0, 153, 255, 0.4)";
   canvasContext.save();
-
-  // Spaceship
-  const drawSpaceShip = () => {
-    const spaceship = new Image();
-    spaceship.src = "/assets/spaceship.png";
-    canvasContext.drawImage(spaceship, playerBall.x, playerBall.y, 75, 40);
-  };
-  drawSpaceShip();
-  document.addEventListener("keypress", event => {
-    if (event.key === "d") {
-      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-      playerBall.x += deltaX;
-      drawSpaceShip();
-    }
-    if (event.key === "a") {
-      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-      playerBall.x -= deltaX;
-      drawSpaceShip();
-    }
-    if (event.key === "w") {
-      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-      playerBall.y -= deltaY;
-      drawSpaceShip();
-    }
-    if (event.key === "s") {
-      ctx.clearRect(playerBall.x, playerBall.y, playerBall.x, playerBall.y);
-      playerBall.y += deltaY;
-      drawSpaceShip();
-    }
-  });
 
   // Sun
   const sun = new Image();
@@ -112,6 +51,35 @@ function draw(canvasContext) {
   Sun.drawObject(-35, -35, 75, 75);
   canvasContext.restore();
   canvasContext.save();
+
+  // Spaceship
+  const drawSpaceShip = () => {
+    const spaceship = new Image();
+    spaceship.src = "/assets/spaceship.png";
+    ctx.drawImage(spaceship, player.x, player.y, 55, 30);
+  };
+  drawSpaceShip();
+  const handleOrientation = event => {
+    const absolute = event.absolute;
+    const alpha = event.alpha;
+    const beta = event.beta;
+    const gamma = event.gamma;
+    player.x += beta * 0.0001;
+    player.y -= gamma * 0.0001;
+    if (
+      player.x < centerCoord.width &&
+      player.x >= centerCoord.width - 55 &&
+      player.y < centerCoord.height &&
+      player.y >= centerCoord.height - 55
+    ) {
+      alert(
+        `You've reached the Sun in ${
+          document.querySelector(".timer").innerText
+        }`
+      );
+    }
+  };
+  window.addEventListener("deviceorientation", handleOrientation, true);
 
   // Mercury
   const mercury = new Image();
@@ -192,7 +160,7 @@ function draw(canvasContext) {
   canvasContext.translate(centerCoord.width, centerCoord.height);
   const Jupiter = new CelestialBody(
     canvasContext,
-    480,
+    320,
     3,
     jupiter,
     io,
@@ -209,7 +177,7 @@ function draw(canvasContext) {
   const saturn = new Image();
   saturn.src = "/assets/saturn.png";
   canvasContext.translate(centerCoord.width, centerCoord.height);
-  const Saturn = new CelestialBody(canvasContext, 637, 3, saturn);
+  const Saturn = new CelestialBody(canvasContext, 370, 4, saturn);
   Saturn.drawOrbit();
   Saturn.drawObject(-30, -20, 60, 40);
   Saturn.drawMoons();
@@ -242,7 +210,7 @@ function draw(canvasContext) {
   canvasContext.translate(centerCoord.width, centerCoord.height);
   const Uranus = new CelestialBody(
     canvasContext,
-    700,
+    400,
     2,
     uranus,
     ariel,
@@ -277,7 +245,7 @@ function draw(canvasContext) {
   canvasContext.translate(centerCoord.width, centerCoord.height);
   const Neptune = new CelestialBody(
     canvasContext,
-    770,
+    450,
     1,
     neptune,
     triton,
@@ -302,7 +270,9 @@ function draw(canvasContext) {
     window.innerHeight
   );
 
-  window.requestAnimationFrame(() => draw(ctx));
+  window.requestAnimationFrame(() =>
+    draw(canvasContext, player, centerCoord, time)
+  );
 }
 
-init();
+init(ctx, player, centerCoord, seconds);
