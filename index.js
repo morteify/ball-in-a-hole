@@ -17,24 +17,24 @@ const centerCoord = {
   height: window.innerHeight / 2
 };
 const player = {
-  x: centerCoord.width - 120,
-  y: centerCoord.height - 90,
+  x: Math.random() * centerCoord.width,
+  y: Math.random() * centerCoord.width,
   radius: 25,
   startAngle: 0,
   endAngle: 2 * Math.PI,
   anticlockwise: false
 };
 
-function init(ctx, player, centerCoord, time) {
-  window.requestAnimationFrame(() => draw(ctx, player, centerCoord, time));
+function init(ctx, player, centerCoord) {
+  window.requestAnimationFrame(() => draw(ctx, player, centerCoord));
 }
 
-function draw(canvasContext, player, centerCoord, time) {
+function draw(canvasContext, player, centerCoord) {
   const universe = new Image();
   universe.src = "/assets/universe.jpg";
 
   const moon = new Image();
-  moon.src = "https://mdn.mozillademos.org/files/1443/Canvas_moon.png";
+  moon.src = "/assets/moon.png";
 
   canvasContext.globalCompositeOperation = "destination-over";
   canvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight); // clear canvas
@@ -77,6 +77,9 @@ function draw(canvasContext, player, centerCoord, time) {
           document.querySelector(".timer").innerText
         }`
       );
+      player.x = 0;
+      player.y = 0;
+      window.location.reload();
     }
   };
   window.addEventListener("deviceorientation", handleOrientation, true);
@@ -270,9 +273,7 @@ function draw(canvasContext, player, centerCoord, time) {
     window.innerHeight
   );
 
-  window.requestAnimationFrame(() =>
-    draw(canvasContext, player, centerCoord, time)
-  );
+  window.requestAnimationFrame(() => draw(canvasContext, player, centerCoord));
 }
 
-init(ctx, player, centerCoord, seconds);
+init(ctx, player, centerCoord);
