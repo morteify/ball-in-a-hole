@@ -25,7 +25,7 @@ const player = {
   anticlockwise: false
 };
 
-const handleOrientation = event => {
+const handleOrientation = (event, player) => {
   const absolute = event.absolute;
   const alpha = event.alpha;
   const beta = event.beta;
@@ -48,7 +48,13 @@ const handleOrientation = event => {
   }
 };
 
-window.addEventListener("deviceorientation", handleOrientation, false);
+window.addEventListener(
+  "deviceorientation",
+  event => {
+    handleOrientation(event, player);
+  },
+  false
+);
 
 function draw(canvasContext, player, centerCoord) {
   const universe = new Image();
@@ -64,6 +70,11 @@ function draw(canvasContext, player, centerCoord) {
   canvasContext.strokeStyle = "rgba(0, 153, 255, 0.4)";
   canvasContext.save();
 
+  // Spaceship
+  const spaceship = new Image();
+  spaceship.src = "/assets/spaceship.png";
+  canvasContext.drawImage(spaceship, player.x, player.y, 55, 30);
+
   // Sun
   const sun = new Image();
   sun.src = "/assets/sun.png";
@@ -72,16 +83,6 @@ function draw(canvasContext, player, centerCoord) {
   Sun.drawObject(-35, -35, 75, 75);
   canvasContext.restore();
   canvasContext.save();
-
-  // Spaceship
-  const drawSpaceShip = () => {
-    const spaceship = new Image();
-    spaceship.src = "/assets/spaceship.png";
-    console.log("player", player.x, player.y);
-    ctx.drawImage(spaceship, player.x, player.y, 55, 30);
-  };
-
-  drawSpaceShip();
 
   // Mercury
   const mercury = new Image();
