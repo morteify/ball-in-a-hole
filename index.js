@@ -25,6 +25,31 @@ const player = {
   anticlockwise: false
 };
 
+const handleOrientation = event => {
+  const absolute = event.absolute;
+  const alpha = event.alpha;
+  const beta = event.beta;
+  const gamma = event.gamma;
+  player.x += beta * 0.05;
+  player.y -= gamma * 0.05;
+
+  if (
+    player.x < centerCoord.width &&
+    player.x >= centerCoord.width - 55 &&
+    player.y < centerCoord.height &&
+    player.y >= centerCoord.height - 55
+  ) {
+    alert(
+      `You've reached the Sun in ${document.querySelector(".timer").innerText}`
+    );
+    player.x = 0;
+    player.y = 0;
+    window.location.reload();
+  }
+};
+
+window.addEventListener("deviceorientation", handleOrientation, false);
+
 function draw(canvasContext, player, centerCoord) {
   const universe = new Image();
   universe.src = "/assets/universe.jpg";
@@ -52,36 +77,11 @@ function draw(canvasContext, player, centerCoord) {
   const drawSpaceShip = () => {
     const spaceship = new Image();
     spaceship.src = "/assets/spaceship.png";
+    console.log("player", player.x, player.y);
     ctx.drawImage(spaceship, player.x, player.y, 55, 30);
   };
 
   drawSpaceShip();
-
-  const handleOrientation = event => {
-    const absolute = event.absolute;
-    const alpha = event.alpha;
-    const beta = event.beta;
-    const gamma = event.gamma;
-    player.x += beta * 0.0001;
-    player.y -= gamma * 0.0001;
-
-    if (
-      player.x < centerCoord.width &&
-      player.x >= centerCoord.width - 55 &&
-      player.y < centerCoord.height &&
-      player.y >= centerCoord.height - 55
-    ) {
-      alert(
-        `You've reached the Sun in ${
-          document.querySelector(".timer").innerText
-        }`
-      );
-      player.x = 0;
-      player.y = 0;
-      window.location.reload();
-    }
-  };
-  window.addEventListener("deviceorientation", handleOrientation, false, false);
 
   // Mercury
   const mercury = new Image();
