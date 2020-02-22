@@ -1,12 +1,12 @@
 import { CelestialBody } from "./CelestialBody.js";
-import { Planet } from "./Planet.js";
 import { Timer } from "./Timer.js";
 
 let seconds = 0;
 window.onload = () => Timer(seconds);
 
 const body = document.querySelector("body");
-body.style = "width:'100vw';height:'100vh';margin:0;padding:0";
+body.style =
+  "width:'100vw';height:'100vh';margin:0;padding:0;overflow-x:hidden;overflow-y:hidden";
 const canvas = document.querySelector("#canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -24,10 +24,6 @@ const player = {
   endAngle: 2 * Math.PI,
   anticlockwise: false
 };
-
-function init(ctx, player, centerCoord) {
-  window.requestAnimationFrame(() => draw(ctx, player, centerCoord));
-}
 
 function draw(canvasContext, player, centerCoord) {
   const universe = new Image();
@@ -58,7 +54,9 @@ function draw(canvasContext, player, centerCoord) {
     spaceship.src = "/assets/spaceship.png";
     ctx.drawImage(spaceship, player.x, player.y, 55, 30);
   };
+
   drawSpaceShip();
+
   const handleOrientation = event => {
     const absolute = event.absolute;
     const alpha = event.alpha;
@@ -66,6 +64,7 @@ function draw(canvasContext, player, centerCoord) {
     const gamma = event.gamma;
     player.x += beta * 0.0001;
     player.y -= gamma * 0.0001;
+
     if (
       player.x < centerCoord.width &&
       player.x >= centerCoord.width - 55 &&
@@ -82,7 +81,7 @@ function draw(canvasContext, player, centerCoord) {
       window.location.reload();
     }
   };
-  window.addEventListener("deviceorientation", handleOrientation, true);
+  window.addEventListener("deviceorientation", handleOrientation, false, false);
 
   // Mercury
   const mercury = new Image();
@@ -276,4 +275,4 @@ function draw(canvasContext, player, centerCoord) {
   window.requestAnimationFrame(() => draw(canvasContext, player, centerCoord));
 }
 
-init(ctx, player, centerCoord);
+draw(ctx, player, centerCoord);

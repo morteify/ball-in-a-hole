@@ -60,7 +60,7 @@ export class CelestialBody {
           moonRotatingSpeedMultiplier
       );
       this.canvasContext.translate(0, translateY);
-      this.canvasContext.drawImage(moonImageSource, -3.5, -3.5, 9, 9);
+      this.canvasContext.drawImage(moonImageSource, -4.5, -4.5, 9, 9);
       this.canvasContext.restore();
     };
     if (this.moons !== null) {
